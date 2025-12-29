@@ -4,8 +4,8 @@ use std::process;
 use std::str::FromStr;
 use std::collections::HashMap;
 use base64::{Engine as _, engine::general_purpose};
-use constrained_advanced_secret_santa::config::Config;
-use constrained_advanced_secret_santa::santa_engine::SantaEngine;
+use advanced_constrained_secret_santa::config::Config;
+use advanced_constrained_secret_santa::santa_engine::SantaEngine;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

@@ -1,5 +1,5 @@
 [package]
-name = "constrained_advanced_secret_santa"
+name = "advanced_constrained_secret_santa"
 version = "0.1.0"
 edition = "2024"
 

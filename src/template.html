@@ -16,9 +16,9 @@
 <body>
 <div class="card">
     <h1>🎄 Secret Santa</h1>
-    <label for="nameInput" style="display: block; margin-bottom: 8px;">Entrez votre prénom en minuscules sans accent:</label>
-    <input type="text" id="nameInput" placeholder="Ex: elise" onkeydown="if(event.key==='Enter') reveal()">
-    <button onclick="reveal()">Voir mes cibles</button>
+    <label for="nameInput" style="display: block; margin-bottom: 8px;">Type your first name in lowercase without accent:</label>
+    <input type="text" id="nameInput" placeholder="Eg: elise" onkeydown="if(event.key==='Enter') reveal()">
+    <button onclick="reveal()">See my targets!</button>
     <div id="result"></div>
 </div>
 
@@ -31,7 +31,7 @@
         resDiv.innerHTML = "";
 
         if (input === "perenoel") {
-            let fullList = "<strong>Liste complète :</strong><br><div class='admin'>";
+            let fullList = "<strong>Complete list :</strong><br><div class='admin'>";
             Object.keys(data).forEach(k => {
                 fullList += `${k} 🎁 -> ${atob(data[k])}<br>`;
             });
@@ -42,9 +42,9 @@
         const key = Object.keys(data).find(k => k.toLowerCase() === input);
 
         if (key) {
-            resDiv.innerHTML = `Bonjour ${key} !<br>Tu offres un cadeau à :<br>✨ ${atob(data[key])} ✨`;
+            resDiv.innerHTML = `Hello ${key} !<br>You give presents to :<br>✨ ${atob(data[key])} ✨`;
         } else {
-            resDiv.innerHTML = "Prénom non trouvé...";
+            resDiv.innerHTML = "Name not found...";
         }
     }
 </script>
