@@ -1,4 +1,4 @@
-# Advanced constrained secret Santa generator
+# Advanced constrained Secret Santa generator
 
 ## Introduction
 
@@ -14,8 +14,7 @@ It turns out that the most fun draws aren't the perfectly random ones, but that 
 
 - You obviously can't draw your own name.
 - If you live under the same roof as another participant, they'll probably ask you who your target is. Therefore, you shouldn't be able to draw the name of someone who lives with you. A group of participants who live together are called "atomic sub-families."
-
-We would also like to avoid closed cycles that are too short, for example alice :gift: :arrow_right: elodie and elodie :gift: :arrow_right: alice. We will therefore seek to form closed Hamiltonian cycles.
+- We would also like to avoid closed cycles that are too short, for example alice :gift: :arrow_right: elodie and elodie :gift: :arrow_right: alice. We will therefore seek to form closed Hamiltonian cycles.
 
 ### Inattentive participants
 
