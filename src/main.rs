@@ -72,8 +72,8 @@ fn generate_html(engine: &SantaEngine, cycles: &Vec<Vec<usize>>) {
     let json_data = serde_json::to_string(&map).unwrap();
     let template = include_str!("template.html");
     let output = template
-        .replace("DATA_PLACEHOLDER", &json_data)
-        .replace("ADMIN_PASSWORD_SEE_ALL_GIFTS", ADMIN_PASSWORD_SEE_ALL_GIFTS);
+        .replace("{{DATA_PLACEHOLDER}}", &json_data)
+        .replace("{{ADMIN_PASSWORD_SEE_ALL_GIFTS}}", ADMIN_PASSWORD_SEE_ALL_GIFTS);
 
     fs::write("santa_results.html", output).expect("Unable to write HTML file");
     println!("HTML file generated: santa_results.html");

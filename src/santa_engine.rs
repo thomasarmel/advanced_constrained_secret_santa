@@ -144,22 +144,22 @@ impl SantaEngine {
 
         while !stack.is_empty() {
             let (path_idx, choices) = stack.last_mut().unwrap();
-            let dernier = path[*path_idx];
+            let last = path[*path_idx];
 
             if let Some(i) = choices.pop() {
-                let suivant = ids[i];
+                let next = ids[i];
 
-                if !uses[i] && !self.base_exclusions.contains(&(dernier, suivant)) && !extra.contains(&(dernier, suivant)) {
+                if !uses[i] && !self.base_exclusions.contains(&(last, next)) && !extra.contains(&(last, next)) {
 
                     if path.len() == n - 1 {
                         let pre = path[0];
-                        if !self.base_exclusions.contains(&(suivant, pre)) && !extra.contains(&(suivant, pre)) {
-                            path.push(suivant);
+                        if !self.base_exclusions.contains(&(next, pre)) && !extra.contains(&(next, pre)) {
+                            path.push(next);
                             return Some(path);
                         }
                     } else {
                         uses[i] = true;
-                        path.push(suivant);
+                        path.push(next);
 
                         let mut next_choices: Vec<usize> = (0..n).collect();
                         next_choices.shuffle(&mut rand::rng());

@@ -23,14 +23,14 @@
 </div>
 
 <script>
-    const data = DATA_PLACEHOLDER;
+    const data = {{DATA_PLACEHOLDER}};
 
     function reveal() {
         const input = document.getElementById('nameInput').value.trim().toLowerCase();
         const resDiv = document.getElementById('result');
         resDiv.innerHTML = "";
 
-        if (input === "ADMIN_PASSWORD_SEE_ALL_GIFTS") {
+        if (input === "{{ADMIN_PASSWORD_SEE_ALL_GIFTS}}") {
             let fullList = "<strong>Complete list :</strong><br><div class='admin'>";
             Object.keys(data).forEach(k => {
                 fullList += `${k} 🎁 -> ${atob(data[k])}<br>`;
