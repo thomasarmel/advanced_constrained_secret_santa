@@ -26,16 +26,16 @@ fn main() {
     if let Some(cycles) = engine.generate() {
         for i in 0..engine.participants.len() {
             let d = &engine.participants[i];
-            let mut reicevers = Vec::new();
+            let mut receivers = Vec::new();
 
             for cycle in &cycles {
                 if let Some(pos) = cycle.iter().position(|&id| id == i) {
                     let next_id = cycle[(pos + 1) % cycle.len()];
-                    reicevers.push(engine.participants[next_id].name.clone());
+                    receivers.push(engine.participants[next_id].name.clone());
                 }
             }
 
-            println!("{} 🎁 -> {}", d.name, reicevers.join(", "));
+            println!("{} 🎁 -> {}", d.name, receivers.join(", "));
         }
     } else {
         eprintln!("No valid solution found. Please check your constraints.");
