@@ -23,15 +23,19 @@ fn main() {
 
     let engine = SantaEngine::new(&config);
 
-    if let Some(cycles) = engine.generate_cycles() {
-        for (i, cycle) in cycles.iter().enumerate() {
-            println!("--- CYCLE {} ---", i + 1);
-            for j in 0..cycle.len() {
-                let d = &engine.participants[cycle[j]];
-                let r = &engine.participants[cycle[(j + 1) % cycle.len()]];
-                println!("{} 🎁 -> {}", d.name, r.name);
+    if let Some(cycles) = engine.generate() {
+        for i in 0..engine.participants.len() {
+            let d = &engine.participants[i];
+            let mut reicevers = Vec::new();
+
+            for cycle in &cycles {
+                if let Some(pos) = cycle.iter().position(|&id| id == i) {
+                    let next_id = cycle[(pos + 1) % cycle.len()];
+                    reicevers.push(engine.participants[next_id].name.clone());
+                }
             }
-            println!();
+
+            println!("{} 🎁 -> {}", d.name, reicevers.join(", "));
         }
     } else {
         eprintln!("No valid solution found. Please check your constraints.");

@@ -1,6 +1,7 @@
 use crate::config::Config;
 use rand::prelude::SliceRandom;
 use std::collections::{HashMap, HashSet};
+use crate::SOLVER_LOOPS;
 
 pub struct Participant {
     id: usize,
@@ -55,64 +56,101 @@ impl SantaEngine {
         }
     }
 
-    pub fn generate_cycles(&self) -> Option<Vec<Vec<usize>>> {
-        let mut all_cycles = Vec::new();
-        let mut exclusions = HashSet::new();
-        if self.solve_cycles(self.n_cycles, &mut all_cycles, &mut exclusions) {
-            Some(all_cycles)
-        } else {
-            None
-        }
+    pub fn generate(&self) -> Option<Vec<Vec<usize>>> {
+        self.solve_cycles(self.n_cycles)
     }
 
-    fn solve_cycles(&self, remaining: usize, found: &mut Vec<Vec<usize>>, excl: &mut HashSet<(usize, usize)>) -> bool {
-        if remaining == 0 { return true; }
+    fn solve_cycles(&self, n_gifts: usize) -> Option<Vec<Vec<usize>>> {
+        let mut found_cycles: Vec<Vec<usize>> = Vec::new();
+        let mut exclusions = HashSet::new();
+        let mut added_edges_history: Vec<Vec<(usize, usize)>> = Vec::new();
+        let mut attempts_stack: Vec<usize> = vec![0];
         let mut ids: Vec<usize> = (0..self.participants.len()).collect();
 
-        for _ in 0..1000 {
-            ids.shuffle(&mut rand::rng());
-            if let Some(cycle) = self.find_cycle(&ids, excl) {
-                let mut added = Vec::new();
-                for i in 0..cycle.len() {
-                    let (a, b) = (cycle[i], cycle[(i + 1) % cycle.len()]);
-                    if excl.insert((a, b)) { added.push((a, b)); }
-                    if excl.insert((b, a)) { added.push((b, a)); }
+        while found_cycles.len() < n_gifts {
+            let current_level = found_cycles.len();
+
+            if attempts_stack[current_level] < SOLVER_LOOPS {
+                attempts_stack[current_level] += 1;
+                ids.shuffle(&mut rand::rng());
+
+                if let Some(cycle) = self.find_path_iterative(&ids, &exclusions) {
+                    let mut added_in_this_step = Vec::new();
+                    for i in 0..cycle.len() {
+                        let (a, b) = (cycle[i], cycle[(i + 1) % cycle.len()]);
+                        if exclusions.insert((a, b)) { added_in_this_step.push((a, b)); }
+                        if exclusions.insert((b, a)) { added_in_this_step.push((b, a)); }
+                    }
+
+                    found_cycles.push(cycle);
+                    added_edges_history.push(added_in_this_step);
+                    attempts_stack.push(0);
                 }
-                found.push(cycle);
-                if self.solve_cycles(remaining - 1, found, excl) { return true; }
-                found.pop();
-                for edge in added { excl.remove(&edge); }
+            } else {
+                if current_level == 0 {
+                    return None;
+                }
+
+                attempts_stack.pop();
+
+                found_cycles.pop();
+                if let Some(edges_to_remove) = added_edges_history.pop() {
+                    for edge in edges_to_remove {
+                        exclusions.remove(&edge);
+                    }
+                }
             }
         }
-        false
+
+        Some(found_cycles)
     }
 
-    fn find_cycle(&self, ids: &[usize], extra_excl: &HashSet<(usize, usize)>) -> Option<Vec<usize>> {
+    fn find_path_iterative(&self, ids: &[usize], extra: &HashSet<(usize, usize)>) -> Option<Vec<usize>> {
+        let n = ids.len();
         let mut path = vec![ids[0]];
-        let mut uses = vec![false; ids.len()];
+        let mut uses = vec![false; n];
         uses[0] = true;
-        if self.backtrack(&mut path, &mut uses, ids, extra_excl) { Some(path) } else { None }
-    }
 
-    fn backtrack(&self, path: &mut Vec<usize>, uses: &mut [bool], ids: &[usize], extra: &HashSet<(usize, usize)>) -> bool {
-        if path.len() == ids.len() {
-            let (der, pre) = (path[path.len() - 1], path[0]);
-            return !self.base_exclusions.contains(&(der, pre)) && !extra.contains(&(der, pre));
-        }
-        let dernier = path[path.len() - 1];
-        let mut next_indices: Vec<usize> = (0..ids.len()).collect();
-        next_indices.shuffle(&mut rand::rng());
+        let mut stack: Vec<(usize, Vec<usize>)> = Vec::new();
 
-        for i in next_indices {
-            let suivant = ids[i];
-            if !uses[i] && !self.base_exclusions.contains(&(dernier, suivant)) && !extra.contains(&(dernier, suivant)) {
-                uses[i] = true;
-                path.push(suivant);
-                if self.backtrack(path, uses, ids, extra) { return true; }
-                path.pop();
-                uses[i] = false;
+        let mut first_choices: Vec<usize> = (0..n).collect();
+        first_choices.shuffle(&mut rand::rng());
+        stack.push((0, first_choices));
+
+        while !stack.is_empty() {
+            let (path_idx, choices) = stack.last_mut().unwrap();
+            let dernier = path[*path_idx];
+
+            if let Some(i) = choices.pop() {
+                let suivant = ids[i];
+
+                if !uses[i] && !self.base_exclusions.contains(&(dernier, suivant)) && !extra.contains(&(dernier, suivant)) {
+
+                    if path.len() == n - 1 {
+                        let pre = path[0];
+                        if !self.base_exclusions.contains(&(suivant, pre)) && !extra.contains(&(suivant, pre)) {
+                            path.push(suivant);
+                            return Some(path);
+                        }
+                    } else {
+                        uses[i] = true;
+                        path.push(suivant);
+
+                        let mut next_choices: Vec<usize> = (0..n).collect();
+                        next_choices.shuffle(&mut rand::rng());
+                        stack.push((path.len() - 1, next_choices));
+                    }
+                }
+            } else {
+                stack.pop();
+                if let Some(removed_id) = path.pop() {
+                    if let Some(idx_in_ids) = ids.iter().position(|&x| x == removed_id) {
+                        uses[idx_in_ids] = false;
+                    }
+                }
             }
         }
-        false
+
+        None
     }
 }
