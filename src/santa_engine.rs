@@ -57,17 +57,13 @@ impl SantaEngine {
     }
 
     pub fn generate(&self) -> Option<Vec<Vec<usize>>> {
-        self.solve_cycles(self.n_cycles)
-    }
-
-    fn solve_cycles(&self, n_gifts: usize) -> Option<Vec<Vec<usize>>> {
         let mut found_cycles: Vec<Vec<usize>> = Vec::new();
         let mut exclusions = HashSet::new();
         let mut added_edges_history: Vec<Vec<(usize, usize)>> = Vec::new();
         let mut attempts_stack: Vec<usize> = vec![0];
         let mut ids: Vec<usize> = (0..self.participants.len()).collect();
 
-        while found_cycles.len() < n_gifts {
+        while found_cycles.len() < self.n_cycles {
             let current_level = found_cycles.len();
 
             if attempts_stack[current_level] < SOLVER_LOOPS {
