@@ -14,7 +14,7 @@ It turns out that the most fun draws aren't the perfectly random ones, but that 
 
 - You obviously can't draw your own name.
 - If you live under the same roof as another participant, they'll probably ask you who your target is. Therefore, you shouldn't be able to draw the name of someone who lives with you. A group of participants who live together are called "atomic sub-families."
-- We would also like to avoid closed cycles that are too short, for example alice :gift: :arrow_right: elodie and elodie :gift: :arrow_right: alice. We will therefore seek to form closed Hamiltonian cycles.
+- We would also like to avoid closed cycles that are too short, for example (Alice :gift: :arrow_right: Elodie) and (Elodie :gift: :arrow_right: Alice). We will therefore seek to form closed Hamiltonian cycles.
 
 ### Inattentive participants
 
@@ -24,9 +24,9 @@ To overcome this problem, the best solution is for each participant to give and 
 
 We then seek to construct a second closed Hamiltonian cycle. Two constraints then appear:
 
-- The two cycles must not lead a participant to give two gifts to the same person (for example, Alice :gift: :arrow_right: Elodie, Elodie).
+- The two cycles must not lead a participant to give two gifts to the same person (for example, (Alice :gift: :arrow_right: Elodie, Elodie)).
 
-- We still aim to avoid overly short closed cycles, such as **Alice** :gift: :arrow_right: **Elodie**, Kevin and **Elodie** :gift: :arrow_right: Didier, **Alice**.
+- We still aim to avoid overly short closed cycles, such as (**Alice** :gift: :arrow_right: **Elodie**, Kevin) and (**Elodie** :gift: :arrow_right: Didier, **Alice**).
 
 In other words, we are looking for **two completely disjoint Hamiltonian cycles on the undirected attribution graph**.
 
@@ -99,11 +99,11 @@ Optionally you can generate a HTML page that will allow each participant to see 
 cargo run --release -- <path_to_json5_config_file> --to-html
 ```
 
-This will generate a `santa_results.html` file in the current directory.
+:arrow_forward: This will generate a `santa_results.html` file in the current directory.
 
-The web page should be responsive.
+:computer: :iphone: The web page should be responsive.
 
-You can host it on your server, and share the link with the participants.
+:white_check_mark: You can host it on your server, and share the link with the participants.
 
 Each participant can then enter their name to see their assigned targets:
 
