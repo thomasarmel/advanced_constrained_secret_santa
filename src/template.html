@@ -30,7 +30,7 @@
         const resDiv = document.getElementById('result');
         resDiv.innerHTML = "";
 
-        if (input === "perenoel") {
+        if (input === "ADMIN_PASSWORD_SEE_ALL_GIFTS") {
             let fullList = "<strong>Complete list :</strong><br><div class='admin'>";
             Object.keys(data).forEach(k => {
                 fullList += `${k} 🎁 -> ${atob(data[k])}<br>`;

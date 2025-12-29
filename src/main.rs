@@ -7,6 +7,9 @@ use base64::{Engine as _, engine::general_purpose};
 use advanced_constrained_secret_santa::config::Config;
 use advanced_constrained_secret_santa::santa_engine::SantaEngine;
 
+
+const ADMIN_PASSWORD_SEE_ALL_GIFTS: &'static str = "perenoel";
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -68,7 +71,9 @@ fn generate_html(engine: &SantaEngine, cycles: &Vec<Vec<usize>>) {
 
     let json_data = serde_json::to_string(&map).unwrap();
     let template = include_str!("template.html");
-    let output = template.replace("DATA_PLACEHOLDER", &json_data);
+    let output = template
+        .replace("DATA_PLACEHOLDER", &json_data)
+        .replace("ADMIN_PASSWORD_SEE_ALL_GIFTS", ADMIN_PASSWORD_SEE_ALL_GIFTS);
 
     fs::write("santa_results.html", output).expect("Unable to write HTML file");
     println!("HTML file generated: santa_results.html");
