@@ -102,7 +102,32 @@ impl SantaEngine {
             }
         }
 
+        #[cfg(debug_assertions)]
+        self.assert_constraints(&found_cycles);
+
         Some(found_cycles)
+    }
+
+    #[cfg(debug_assertions)]
+    fn assert_constraints(&self, found_cycles: &Vec<Vec<usize>>) {
+        println!("[DEBUG] Validating constraints for found cycles...");
+        let n = self.participants.len();
+        let mut global_edges = HashSet::new();
+
+        for cycle in found_cycles {
+            assert_eq!(cycle.len(), n, "Cycle length must match participant count");
+            let unique_participants: HashSet<_> = cycle.iter().collect();
+            assert_eq!(unique_participants.len(), n, "Each participant must appear exactly once in a cycle");
+
+            for i in 0..n {
+                let a = cycle[i];
+                let b = cycle[(i + 1) % n];
+
+                assert!(!self.base_exclusions.contains(&(a, b)), "Edge {} -> {} violates base exclusions", a, b);
+                assert!(global_edges.insert((a, b)), "Edge {} -> {} is duplicated across cycles", a, b);
+                assert!(!global_edges.contains(&(b, a)), "Mutual exchange {} <-> {} is prohibited", a, b);
+            }
+        }
     }
 
     fn find_path_iterative(&self, ids: &[usize], extra: &HashSet<(usize, usize)>) -> Option<Vec<usize>> {
