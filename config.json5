@@ -1,0 +1,24 @@
+{
+  // Number of gifts each participant should give
+  n_gifts: 2,
+
+  // List of participants with their family affiliation and last year's targets
+  // each participant must have a different name
+  // you cannot offer a gift to a member of your own family
+  participants: [
+    { name: "Alice",   family: 1, last_year_targets: ["Élodie"] },
+    { name: "Bernard", family: 1, last_year_targets: ["Gisèle"] },
+    { name: "Céline",  family: 1, last_year_targets: ["Kévin"] },
+    { name: "Didier",  family: 1, last_year_targets: ["Irène"] },
+
+    { name: "Élodie",  family: 2, last_year_targets: ["Jean"] },
+    { name: "Fabrice", family: 2, last_year_targets: ["Lucie"] },
+    { name: "Gisèle",  family: 2, last_year_targets: ["Alice"] },
+    { name: "Hubert",  family: 2, last_year_targets: ["Bernard"] },
+
+    { name: "Irène",   family: 3, last_year_targets: ["Céline"] },
+    { name: "Jean",    family: 3, last_year_targets: ["Didier"] },
+    { name: "Kévin",   family: 3, last_year_targets: ["Hubert"] },
+    { name: "Lucie",   family: 3, last_year_targets: ["Fabrice"] }
+  ]
+}
