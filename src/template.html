@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa</title>
+    <style>
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
+        input { padding: 10px; width: 80%; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #result { margin-top: 20px; font-weight: bold; white-space: pre-line; color: #1b5e20; }
+        .admin { text-align: left; font-size: 0.8rem; color: #555; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>🎄 Secret Santa</h1>
+    <label for="nameInput" style="display: block; margin-bottom: 8px;">Entrez votre prénom en minuscules sans accent:</label>
+    <input type="text" id="nameInput" placeholder="Ex: elise" onkeydown="if(event.key==='Enter') reveal()">
+    <button onclick="reveal()">Voir mes cibles</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const data = DATA_PLACEHOLDER;
+
+    function reveal() {
+        const input = document.getElementById('nameInput').value.trim().toLowerCase();
+        const resDiv = document.getElementById('result');
+        resDiv.innerHTML = "";
+
+        if (input === "perenoel") {
+            let fullList = "<strong>Liste complète :</strong><br><div class='admin'>";
+            Object.keys(data).forEach(k => {
+                fullList += `${k} 🎁 -> ${atob(data[k])}<br>`;
+            });
+            resDiv.innerHTML = fullList + "</div>";
+            return;
+        }
+
+        const key = Object.keys(data).find(k => k.toLowerCase() === input);
+
+        if (key) {
+            resDiv.innerHTML = `Bonjour ${key} !<br>Tu offres un cadeau à :<br>✨ ${atob(data[key])} ✨`;
+        } else {
+            resDiv.innerHTML = "Prénom non trouvé...";
+        }
+    }
+</script>
+</body>
+</html>
