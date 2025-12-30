@@ -9,6 +9,7 @@ use advanced_constrained_secret_santa::santa_engine::SantaEngine;
 
 
 const ADMIN_PASSWORD_SEE_ALL_GIFTS: &'static str = "perenoel";
+const OUTPUT_HTML_FILE: &'static str = "santa_results.html";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -45,7 +46,9 @@ fn main() {
         }
         if to_html {
             println!();
-            generate_html(&engine, &cycles);
+            let output_html = generate_html(&engine, &cycles);
+            fs::write(OUTPUT_HTML_FILE, output_html).expect("Unable to write HTML file");
+            println!("HTML file generated: santa_results.html");
         }
     } else {
         eprintln!("No valid solution found. Please check your constraints.");
@@ -53,7 +56,9 @@ fn main() {
     }
 }
 
-fn generate_html(engine: &SantaEngine, cycles: &Vec<Vec<usize>>) {
+fn generate_html(engine: &SantaEngine, cycles: &Vec<Vec<usize>>) -> String {
+    const TEMPLATE_HTML: &'static str = include_str!("template.html");
+
     let mut map = HashMap::new();
 
     for i in 0..engine.participants.len() {
@@ -70,11 +75,9 @@ fn generate_html(engine: &SantaEngine, cycles: &Vec<Vec<usize>>) {
     }
 
     let json_data = serde_json::to_string(&map).unwrap();
-    let template = include_str!("template.html");
-    let output = template
+    let output = TEMPLATE_HTML
         .replace("{{DATA_PLACEHOLDER}}", &json_data)
         .replace("{{ADMIN_PASSWORD_SEE_ALL_GIFTS}}", ADMIN_PASSWORD_SEE_ALL_GIFTS);
 
-    fs::write("santa_results.html", output).expect("Unable to write HTML file");
-    println!("HTML file generated: santa_results.html");
+    output
 }

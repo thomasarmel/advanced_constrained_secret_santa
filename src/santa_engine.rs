@@ -63,12 +63,14 @@ impl SantaEngine {
         let mut attempts_stack: Vec<usize> = vec![0];
         let mut ids: Vec<usize> = (0..self.participants.len()).collect();
 
+        let mut rng = rand::rng();
+
         while found_cycles.len() < self.n_cycles {
             let current_level = found_cycles.len();
 
             if attempts_stack[current_level] < SOLVER_LOOPS {
                 attempts_stack[current_level] += 1;
-                ids.shuffle(&mut rand::rng());
+                ids.shuffle(&mut rng);
 
                 if let Some(cycle) = self.find_path_iterative(&ids, &exclusions) {
                     let mut added_in_this_step = Vec::new();
@@ -133,9 +135,10 @@ impl SantaEngine {
         uses[0] = true;
 
         let mut stack: Vec<(usize, Vec<usize>)> = Vec::new();
+        let mut rng = rand::rng();
 
         let mut first_choices: Vec<usize> = (0..n).collect();
-        first_choices.shuffle(&mut rand::rng());
+        first_choices.shuffle(&mut rng);
         stack.push((0, first_choices));
 
         while !stack.is_empty() {
@@ -158,7 +161,7 @@ impl SantaEngine {
                         path.push(next);
 
                         let mut next_choices: Vec<usize> = (0..n).collect();
-                        next_choices.shuffle(&mut rand::rng());
+                        next_choices.shuffle(&mut rng);
                         stack.push((path.len() - 1, next_choices));
                     }
                 }
